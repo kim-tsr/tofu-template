@@ -22,11 +22,10 @@ resource "proxmox_virtual_environment_vm" "vm" {
     discard      = "on"
   }
 
-  dynamic "network_device" {
+   dynamic "network_device" {
     for_each = var.nics
     content {
-      bridge   = network_device.value.bridge
-      vlan_id  = network_device.value.vlan_id
+      bridge   = network_device.value
       model    = var.nic_model
       firewall = false
     }

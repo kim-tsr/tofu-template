@@ -29,8 +29,10 @@ variable "tags" {
 }
 
 variable "nics" {
-  type = list(object({
-    bridge  = string
-    vlan_id = optional(number)
-  }))
+  type = list(string)
+}
+
+variable "nic_model" {
+  type    = string
+  default = "e1000"
 }

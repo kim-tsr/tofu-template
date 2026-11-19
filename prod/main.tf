@@ -30,8 +30,5 @@ module "node" {
   image_path     = each.value.image
   datastore_id   = "vmdata"
 
-  nics = concat(
-    [local.mgmt],
-    [for b in each.value.links : { bridge = b, vlan_id = null }]
-  )
+  nics = concat([local.mgmt], each.value.links)
 }
