@@ -6,13 +6,14 @@ locals {
   sonic  = "local:import/sonic-vs-202511.qcow2"
   debian = "local:import/debian-13-nocloud-amd64.qcow2"
   vios = "local:import/vios-adventerprisek9-m.spa.159-3.m9.qcow2"
+  vios_l2 = "local:import/vios_l2-adventerprisek9-m.ssa.high_iron_20200929.qcow2"
 
   nodes = {
-    "router-isp"  = { vm_id = 1000, links = ["vmbr11", "vmbr12"], role = "routeur", image = local.sonic }
+    "router-isp"  = { vm_id = 1000, links = ["vmbr11", "vmbr12"], role = "routeur", image = local.vios }
     "gw-1"        = { vm_id = 1011, links = ["vmbr11", "vmbr21"], role = "routeur", image = local.vios }
     "gw-2"        = { vm_id = 1012, links = ["vmbr12", "vmbr22"], role = "routeur", image = local.vios }
-    "access-1"    = { vm_id = 1021, links = ["vmbr21", "vmbr30", "vmbr31"], role = "switch", image = local.sonic }
-    "access-2"    = { vm_id = 1022, links = ["vmbr22", "vmbr30", "vmbr32"], role = "switch", image = local.sonic }
+    "access-1"    = { vm_id = 1021, links = ["vmbr21", "vmbr30", "vmbr31"], role = "switch", image = local.vios_l2 }
+    "access-2"    = { vm_id = 1022, links = ["vmbr22", "vmbr30", "vmbr32"], role = "switch", image = local.vios_l2 }
     "client-1"    = { vm_id = 1031, links = ["vmbr31"], role = "computer", image = local.debian }
     "client-2"    = { vm_id = 1032, links = ["vmbr32"], role = "computer", image = local.debian }
   }
@@ -28,6 +29,7 @@ module "node" {
   tags           = ["topologie_1", each.value.role]
   vm_id          = each.value.vm_id
   image_path     = each.value.image
+  disk_interface = each.value.image == local.debian ? "scsi0" : "virtio0"
   datastore_id   = "vmdata"
 
   nics = concat([local.mgmt], each.value.links)

@@ -36,3 +36,8 @@ variable "nic_model" {
   type    = string
   default = "e1000"
 }
+
+variable "disk_interface" {
+  type    = string
+  default = "scsi0"
+}
